@@ -51,6 +51,43 @@ const getChecked = (arr) => {
     return checked;
 }
 
+const scheduleActivities = (checked) => {
+    const filledSlots = [];
+    checked.forEach(input => {
+        if (input.hasAttribute('data-day-and-time')) {
+            const timeSlot = input.dataset.dayAndTime
+            filledSlots.push(timeSlot);
+        }
+    });
+    console.log(filledSlots);
+    return filledSlots;
+    
+};
+
+//This needs to be fixed
+// Maybe use a class instead to mark an activity as a conflict
+const blockActivities = (filledSlots) => {
+    const timeSlots = filledSlots;
+    let conflictSlots = [];
+    activities.forEach(activity => {
+        if (activity.hasAttribute('data-day-and-time')) {
+            if (timeSlots.includes(activity.dataset.dayAndTime) && activity.checked === false) {
+                conflictSlots.push(activity);
+            }
+        }
+    })
+    conflictSlots.forEach(activity => {
+        if (timeSlots.includes(activity.dataset.dayAndTime) === true) {
+            activity.disabled = true;
+            activity.parentElement.style.backgroundColor = '#ccc';
+        } else if (timeSlots.includes(activity.dataset.dayAndTime) === false) {
+            activity.disabled = false;
+            activity.parentElement.style.backgroundColor = 'initial';
+        }
+    });
+};
+
+
     //Checks selected activity price and adds amount to total
 activitiesField.addEventListener('change', (e) => {
     const activity = e.target;
@@ -58,10 +95,9 @@ activitiesField.addEventListener('change', (e) => {
     activity.checked ? totalCost += activityCost : totalCost -= activityCost;
     totalCostDisplay.innerText = `Total: $${totalCost}`;
 
-
-    console.log(activities[1].dataset.dayAndTime);
-    console.log(getChecked(activities));
-
+    const checked = getChecked(activities);
+    const filledTimeSlots = scheduleActivities(checked);
+    blockActivities(filledTimeSlots);
 });
 
 
@@ -71,9 +107,9 @@ const paymentField = document.getElementById('activities');
 
 
 
+// activities.forEach(activity => {
+//     if (activity.hasAttribute('data-day-and-time')) {
 
-const scheduleActivities = () => {
-    // const attending = 
-    let checked = [];
-};
-
+//         filledSlots.includes(activity.dataset.dayAndTime) ? activity.disabled = true : activity.disabled = false;
+//     }
+// })
