@@ -1,11 +1,11 @@
+// =====================================
+//Basic Info
+// =====================================
+
 const nameInput = document.getElementById("name");
 const otherJobInputField = document.getElementById("other-job-role");
 const roleSelector = document.getElementById("title");
-const shirtColorSelector = document.getElementById("color");
-const shirtDesignSelector = document.getElementById("design");
 
-
-//Basic Info
 nameInput.focus();
 otherJobInputField.style.display = 'none';
 
@@ -17,7 +17,12 @@ roleSelector.addEventListener("change", (e) => {
 });
 
 
+// =====================================
 //T-Shirt Info
+// =====================================
+
+const shirtColorSelector = document.getElementById("color");
+const shirtDesignSelector = document.getElementById("design");
 shirtColorSelector.disabled = true;
 
 shirtDesignSelector.addEventListener("change", (e) => {
@@ -35,7 +40,10 @@ shirtDesignSelector.addEventListener("change", (e) => {
 })
 
 
-// Activity Registration
+// =====================================
+// Activity Registration\
+// =====================================
+
 const activitiesField = document.getElementById('activities');
 const totalCostDisplay = document.getElementById('activities-cost');
 const activities = document.querySelectorAll('#activities input');
@@ -84,7 +92,10 @@ activitiesField.addEventListener('change', (e) => {
 });
 
 
+// =====================================
 // Payment Info
+// =====================================
+
 const paymentField = document.getElementById('activities');
 
 
