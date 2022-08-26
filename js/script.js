@@ -41,52 +41,37 @@ const totalCostDisplay = document.getElementById('activities-cost');
 const activities = document.querySelectorAll('#activities input');
 let totalCost = 0;
 
-const getChecked = (arr) => {
-    let checked = [];
-    arr.forEach(checkbox => {
-        if(checkbox.checked) {
-            checked.push(checkbox);
-        }
-    });
-    return checked;
+// Gets status of each activity (selected or not selected by user)
+const getActivityStatus = (arr) => {
+    let unselected = [];
+    let selected = [];
+    arr.forEach(activity => activity.checked ? selected.push(activity) : unselected.push(activity));
+    let status = {
+        unselected,
+        selected
+    }
+    return status;
 }
+const activityStatus = () => getActivityStatus(activities);
 
-const scheduleActivities = (checked) => {
-    const filledSlots = [];
-    checked.forEach(input => {
-        if (input.hasAttribute('data-day-and-time')) {
-            const timeSlot = input.dataset.dayAndTime
-            filledSlots.push(timeSlot);
-        }
-    });
-    console.log(filledSlots);
-    return filledSlots;
-    
-};
-
-//This needs to be fixed
-// Maybe use a class instead to mark an activity as a conflict
-const blockActivities = (filledSlots) => {
-    const timeSlots = filledSlots;
-    let conflictSlots = [];
-    activities.forEach(activity => {
-        if (activity.hasAttribute('data-day-and-time')) {
-            if (timeSlots.includes(activity.dataset.dayAndTime) && activity.checked === false) {
-                conflictSlots.push(activity);
-            }
+// Disables activities if they take place during a selected activity's time slot.
+const disableConflicts = () => {
+    let filledTimeSlots =  [];
+    activityStatus().selected.forEach(activity => {
+        const timeSlot = activity.dataset.dayAndTime;
+        filledTimeSlots.push(timeSlot);
+    })
+    activityStatus().unselected.forEach(activity => {
+        const timeSlot = activity.dataset.dayAndTime;
+        if (filledTimeSlots.includes(timeSlot)) {
+            activity.disabled = true;
+            activity.parentElement.style.backgroundColor = "#ccc";
+        } else {
+            activity.disabled = false;
+            activity.parentElement.style.backgroundColor = "initial";
         }
     })
-    conflictSlots.forEach(activity => {
-        if (timeSlots.includes(activity.dataset.dayAndTime) === true) {
-            activity.disabled = true;
-            activity.parentElement.style.backgroundColor = '#ccc';
-        } else if (timeSlots.includes(activity.dataset.dayAndTime) === false) {
-            activity.disabled = false;
-            activity.parentElement.style.backgroundColor = 'initial';
-        }
-    });
 };
-
 
     //Checks selected activity price and adds amount to total
 activitiesField.addEventListener('change', (e) => {
@@ -94,10 +79,8 @@ activitiesField.addEventListener('change', (e) => {
     const activityCost = +activity.dataset.cost;
     activity.checked ? totalCost += activityCost : totalCost -= activityCost;
     totalCostDisplay.innerText = `Total: $${totalCost}`;
-
-    const checked = getChecked(activities);
-    const filledTimeSlots = scheduleActivities(checked);
-    blockActivities(filledTimeSlots);
+    activityStatus();
+    disableConflicts();
 });
 
 
